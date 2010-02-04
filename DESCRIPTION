@@ -1,0 +1,11 @@
+Package: iChip
+Title: Bayesian Modeling of ChIP-chip Data Through Hidden Ising Models
+Version: 0.99.0
+Date: 2009-11-09
+Depends: R (>= 2.10.0),limma
+Author: Qianxing Mo
+Maintainer: Qianxing Mo  <moq@mskcc.org>
+Description: Bayesian Hierarchical modeling of ChIP-chip data through hidden Ising Models. 
+LazyData: yes
+License: GPL (>= 2)
+biocViews: ChIP-chip,Affymetrix, Agilent, Microarray, Bioinformatics

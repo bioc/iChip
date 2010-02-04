@@ -1,0 +1,373 @@
+%\VignetteIndexEntry{iChip}
+%\VignetteDepends{}
+%\VignetteKeywords{ChIP-chip ChIP-on-chip Affymetrix Agilent NimbleGen tiling arrays}
+%\VignettePackage{iChip}
+
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+\SweaveOpts{echo=FALSE}
+
+\setlength{\textheight}{8.5in}
+\setlength{\textwidth}{6in}
+\setlength{\topmargin}{-0.25in}
+\setlength{\oddsidemargin}{0.25in}
+\setlength{\evensidemargin}{0.25in}
+
+\begin{document}
+\setkeys{Gin}{width=0.99\textwidth}
+
+\title{\bf iChip: A Package for Analyzing Multi-platform ChIP-chip data with Various Sample Sizes}
+
+\author{Qianxing Mo}
+
+\maketitle
+
+\begin{center}
+Department of Epidemiology and Biostatistics\\
+Memorial Sloan-Kettering Cancer Center\\
+{\tt moq@mskcc.org}
+\end{center}
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+This package implements the models proposed by Mo and Liang (2010a, b) for ChIP-chip data analysis. 
+The package can be used to analyze the ChIP-chip data from multiple platforms 
+(e.g. Affymetrix, Agilent, and NimbleGen) with various genomic resolutions and various sample sizes. 
+Mo and Liang (2010a,b) proposed Bayesian Hierarchical models to model the ChIP-chip data in which 
+the spatial dependency of the data is modeled through ferromagnetic high-order or standard Ising models.  
+Briefly,  without loss of generality, the proposed methods let each probe be associated with a binary 
+latent variable $X_i \in (0, 1)$,
+where $i$ denotes the ID for the probe, and $X_i=1$ denotes that the probe is an enriched probe, and 0
+otherwise.  In the first stage, conditioning on the latent variable, the probe enrichment measurements for 
+each state (0 or 1) are modeled by normal distributions.  Here, the probe enrichment measurement could
+be any appropriate measurement for comparison of IP-enriched and control samples.
+For example, the measurement could be a log2 ratio of the IP-enriched and control samples for
+a single replicate, or a summary statistic such as t-like statistic or mean difference for
+multiple replicates.  In the second stage, the latent variable is modeled by 
+ferromagnetic Ising models.  The Gibbs sampler and Metropolis algorithm are used to simulate from the 
+posterior distributions of the model parameters, and the posterior probabilities for the probes 
+in the enriched state ($X_i = 1$) is used for statistical inference.  
+A probe with a high posterior probability in the enriched state will provide strong evidence that the probe is an 
+enriched probe.  For further details, we refer the user to Mo and Liang's papers.  If you use this
+software to analyze your data, we will appreciate it if you can cite our papers.  
+
+\section{Agilent and Affymetrix ChIP-chip Data}
+
+A subset of the Oct4 (Boyer et al., 2005) and the p53 (Cawley et al, 2004) data are used for the purpose of illustration.
+The average genomic resolutions for the Oct4 and p53 data are about 280 bps and 35 bps, respectively.  
+Both the Oct4 and p53 data have been log2 transformed and quantile-normalized.  
+Note iChip software doesn't provide functions for data normalization.  The users should normalize their data before using iChip software.  For one-color and two-color data, one can use the quantile method (e.g., see the function 
+{\it normalize.quantiles()} in the {\bf affy} package). For two-color data, one can also use 
+the \textit{loess} method (e.g., see the function \textit{normalizeWithinArrays()} in the {\bf limma} package). 
+\noindent
+The full Oct4 data can be obtained from 
+\begin{verbatim}
+  http://jura.wi.mit.edu/young_public/hESregulation/Data_download.html
+\end{verbatim}
+\noindent
+The full p53 data can be obtained from 
+\begin{verbatim}
+ http://www.gingeras.org/affy_archive_data/publication/tfbs/
+\end{verbatim}
+
+\section{Example1 --- Analyzing the Agilent Promoter Array Data}
+Let's start analyzing the low resolution Oct4 data.  Firstly, we need to calculate the enrichment measurement
+for each probe.  Although the enrichment measurement could be any appropriate measurement 
+for comparison of IP-enriched and control samples, we suggest using the 
+empirical Bayes t-statistic for multiple replicates, which can be easily calculated using 
+the {\bf limma} package (Smyth, 2004).  Here, we call the empirical Bayes t-statistic limma t-statistic.  
+For the users who are not familiar with limma t-statistic, we provide a wrapper function {\bf lmtstat} 
+for the calculation. \\
+
+\noindent
+There are two replicates for the Oct4 data.  
+The enriched DNA was labeled with Cy5 (red) dye and the control DNA was labeled with Cy3 (green) dye.  
+<<echo=TRUE,print=FALSE>>=
+library(iChip)
+data(oct4)
+head(oct4,n=3L)
+@ 
+
+\noindent
+To use the iChip1 and iChip2 function, the data must be sorted, firstly by chromosome then by genomic position.
+It may be a good habit to sort the data at the beginning, although function {\bf lmtstat} doesn't require the data
+be sorted. 
+<<echo=TRUE,print=FALSE>>=
+oct4 = oct4[order(oct4[,1],oct4[,2]),]
+@ 
+\noindent
+Calculate the enrichment measurements --- two-sample limma t-statistics. 
+<<echo=TRUE,print=FALSE>>=
+oct4lmt = lmtstat(oct4[,5:6],oct4[,3:4])
+@ 
+
+\noindent
+Here, we treat the IP-enriched and control
+data as independent data although both the IP-enriched and control samples were hybridized to the same array. 
+This is because the quantile-normalization method was applied to the oct4 data. If the data are normalized using
+\textit{loess} method, the resulting data are in log ratio format (e.g., log2(IP-enriched/control)).  In this case, 
+one can calculate the paired limma t-statistics. Suppose a matrix called log2ratio are the loess-normalized data, 
+where each column corresponds to a sample, the paired limma t-statistics can be calculated 
+using {\bf lmtstat}(log2ratio). \\
+
+\noindent
+Prepare the data for iChip2 function. 
+<<echo=TRUE,print=FALSE>>=
+oct4Y = cbind(oct4[,1],oct4lmt)
+@ 
+
+\noindent 
+Apply the second-order Ising model to the ChIP-chip data by setting winsize = 2. 
+According to our experience, a balance between high sensitivity and low FDR can be
+achieved when winsize = 2.  The critical value of the second-order Ising model is about 1.0. 
+For low resolution data, the value of beta could be around the critical value.   
+In general, increasing beta value will lead to less enriched regions, which amounts to 
+setting a stringent criterion for detecting enriched regions. 
+<<echo=TRUE,print=FALSE>>=
+set.seed(777)
+oct4res2 = iChip2(Y=oct4Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=1.25,verbose=FALSE)
+@ 
+
+\noindent 
+Plot the model parameters to see whether they converge.  In general, the model has converged when the parameters 
+fluctuate around the modes of their distributions.  If there is an obvious trend(e.g. continuous increase or decrease), 
+one should increase the number of iterations in the burn-in phase.  If this doesn't work, one can try to adjust 
+the parameter {\bf beta} to see how it affect the results. 
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+par(mfrow=c(2,2), mar=c(4.1, 4.1, 2.0, 1.0))
+plot(oct4res2$mu0, pch=".", xlab="Iterations", ylab="mu0")
+plot(oct4res2$lambda0, pch=".", xlab="Iterations", ylab="lambda0")
+plot(oct4res2$mu1, pch=".", xlab="Iterations", ylab="mu1")
+plot(oct4res2$lambda1, pch=".", xlab="Iterations", ylab="lambda1")
+@
+\end{center}
+
+\noindent
+The histogram of the posterior probabilities should be dichotomized, either 0 or 1.  For transcription factor binding
+site studies, the histogram should be dominated by 0. 
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+hist(oct4res2$pp)
+@ 
+\end{center}
+
+
+\noindent
+Call the enriched regions detected by iChip2 using a
+posterior probability (pp) cutoff of 0.9.  
+<<echo=TRUE,print=FALSE>>=
+reg1 = enrichreg(pos=oct4[,1:2],pp=oct4res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
+print(reg1)
+@ 
+
+\noindent
+Call the enriched regions detected by iChip2 using a FDR cutoff of 0.01.  The FDR is calculated
+using a direct posterior probability approach (Newton et al., 2004). 
+<<echo=TRUE,print=FALSE>>=
+reg2 = enrichreg(pos=oct4[,1:2],pp=oct4res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+print(reg2)
+@ 
+
+\noindent
+BED file can be easily created using the output from function {\bf enrichreg}, which can be used for motif discovery
+and visualized in the UCSC genome browser.  For example, 
+
+<<echo=TRUE,print=FALSE>>=
+bed = data.frame(chr=paste("chr",reg2[,1],sep=""),reg2[,2:3])
+print(bed)
+@ 
+
+\noindent
+Model the oct4 data using the first-order Ising model. 
+<<echo=TRUE,print=FALSE>>=
+oct4res1 =iChip1(enrich=oct4lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE)
+@ 
+
+\noindent 
+Plot the model parameters to see whether they converge.
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+par(mfrow=c(2,2), mar=c(4.1, 4.1, 2.0, 1.0))
+plot(oct4res1$beta, pch=".", xlab="Iterations", ylab="beta")
+plot(oct4res1$mu0, pch=".", xlab="Iterations", ylab="mu0")
+plot(oct4res1$mu1, pch=".", xlab="Iterations", ylab="mu1")
+plot(oct4res1$lambda, pch=".", xlab="Iterations", ylab="lambda")
+@
+\end{center}
+
+\noindent
+Call the enriched regions detected by iChip1.
+<<echo=TRUE,print=FALSE>>=
+enrichreg(pos=oct4[,1:2],pp=oct4res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
+enrichreg(pos=oct4[,1:2],pp=oct4res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+@ 
+
+\section{Example2 --- Analyzing the Affymetrix Tiling Array Data}
+\noindent
+Now, let's analyze the high resolution p53 data.  
+
+<<echo=TRUE,print=FALSE>>=
+data(p53)
+head(p53,n=3L)
+# sort the p53 data by chromosome and genomic position
+p53 = p53[order(p53[,1],p53[,2]),]
+p53lmt = lmtstat(p53[,9:14],p53[,3:8])
+p53Y = cbind(p53[,1],p53lmt)
+@ 
+
+\noindent
+For high resolution data, beta could be set to a relatively large value (e.g. from 2-4).
+In general, increasing beta value will lead to less enriched regions, which amounts to 
+setting a stringent criterion for detecting enriched regions. 
+<<echo=TRUE,print=FALSE>>=
+p53res2 = iChip2(Y=p53Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5)
+@ 
+
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+par(mfrow=c(2,2), mar=c(4.1, 4.1, 2.0, 1.0))
+plot(p53res2$mu0, pch=".", xlab="Iterations", ylab="mu0")
+plot(p53res2$lambda0, pch=".", xlab="Iterations", ylab="lambda0")
+plot(p53res2$mu1, pch=".", xlab="Iterations", ylab="mu1")
+plot(p53res2$lambda1, pch=".", xlab="Iterations", ylab="lambda1")
+@
+\end{center}
+
+\noindent
+The histogram of the posterior probabilities should be dichotomized, either 0 or 1.  For transcription factor binding
+site studies, the histogram should be dominated by 0. 
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+hist(p53res2$pp)
+@ 
+\end{center}
+
+<<echo=TRUE,print=FALSE>>=
+enrichreg(pos=p53[,1:2],pp=p53res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
+enrichreg(pos=p53[,1:2],pp=p53res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+@ 
+
+\noindent
+Model the p53 data using the first-order Ising model. 
+<<echo=TRUE,print=FALSE>>=
+p53res1 =iChip1(enrich=p53lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE)
+@ 
+
+\begin{center}
+<<fig=TRUE,echo=TRUE>>=
+par(mfrow=c(2,2), mar=c(4.1, 4.1, 2.0, 1.0))
+plot(p53res1$beta, pch=".", xlab="Iterations", ylab="beta")
+plot(p53res1$mu0, pch=".", xlab="Iterations", ylab="mu0")
+plot(p53res1$mu1, pch=".", xlab="Iterations", ylab="mu1")
+plot(p53res1$lambda, pch=".", xlab="Iterations", ylab="lambda")
+@
+\end{center}
+
+<<echo=TRUE,print=FALSE>>=
+enrichreg(pos=p53[,1:2],pp=p53res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
+enrichreg(pos=p53[,1:2],pp=p53res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+@ 
+
+\section{Tips}
+\noindent
+What happens when there is no enriched region?  Suppose the data are just random noises.  
+<<echo=TRUE,print=FALSE>>=
+randomY = cbind(p53[,1],rnorm(10000,0,1))
+randomres2 = iChip2(Y=randomY,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5,verbose=FALSE)
+table(randomres2$pp)
+@ 
+
+\noindent
+In this case, all the probes are only in one state.  Since there are not enriched probe, the mean and variance 
+become $-\infty$ or $\infty$.  In the MCMC simulations, we relabel the outputs
+according to the constraint $\mu_0 < \mu_1$, where $\mu_0$ and $\mu_1$ are the population means for the non-enriched
+and enriched probes, respectively (For details, see Mo and Liang, 2010a).  That is, when $\mu_0 > \mu_1$,
+$\mu_0$ will be treated as the population mean of the enriched probes.  As a result, no matter 
+$\mu_1 = \infty$ or $\mu_1 = -\infty$, the posterior probabilities of probes are all 1s or close to 1. 
+Therefore, when this happens, it means there are not enriched region.  \\
+
+\noindent
+In addition, for transcription factor binding site studies, if the posterior probabilities are not dichotomized 
+(major 0, minor 1), it suggests that the Ising model is not in the super-paramagnetic phase.  
+Only the super-paramagnetic phase reflects the binding events on the chromosomes.  
+Therefore, the users should increase the value of beta to let the phase transition occur so that
+the Ising model reach the super-paramagnetic phase. \\
+
+\noindent
+The states of probes produced by iChip1 are also in the same state if there is not enriched region. 
+<<echo=TRUE,print=FALSE>>=
+randomres1 =iChip1(enrich=randomY[,2],burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE)
+table(randomres1$pp)
+@ 
+
+\noindent
+Although the above two examples only show the analysis for the data on a single chromosome, one can 
+use iChip2 and iChip1 functions to analyze data with multiple chromosomes.  Although a probe may not physically 
+interact with its adjacent probes (e.g., the last probe of a chromosome and the first probe of the next chromosome, and 
+two probes in the same chromosome that are adjacent but separated by a long genomic distance), in practice, 
+it should be acceptable to consider the interactions between these adjacent and boundary probes.  
+There are two reasons for this argument.  Firstly, the number of these probes is quite small, 
+compared to all the probes in the tiling arrays. Secondly, these boundary probes have a very high 
+probability to be non-binding probes, thus it should be reasonable to consider the interactions between them.  
+If we let these boundary and adjacent probes interact with each other, 
+it has little effect on the results, but significantly simply the algorithms for modeling the ChIP-chip data.  \\
+
+\noindent
+Finally, it should be noted that when the data are very noisy, the posterior mean of beta will be relatively small
+(e.g., around 1) when the iChip1 method is used.  In this case, the probes are not dominated by non-binding probes.  
+The user should increase the value of parameter {\bf minbeta} or use the {\bf iChip2} method for modeling. 
+Both iChip1 and iChip2 functions run reasonably fast.  It costs about 15-20 minutes for a data set with 500,000 probes 
+for running 15,000 iterations on a 64-bit Linux machine with 2.4 GHZ CPU. 
+If the total number of probes is relatively small, 
+say, a half million, one may analyze the data in a single run.  If the total number of probes are large, say, 
+several millions, one may perform parallel computation.  For example, one can divide the data to several 
+pieces and run them simultaneously.  
+
+<<echo=TRUE,print=TRUE>>=
+sessionInfo()
+@ 
+
+
+%\newpage
+%\bibliographystyle{apalike}
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010a}
+Mo, Q., Liang, F. (2010a).
+Bayesian Modeling of ChIP-chip data through a high-order Ising Model.  
+{\it Biometrics} Advance Access published in February, 2010. DOI: 10.1111/j.1541-0420.2009.01379.x
+
+\bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010b}
+Mo, Q., Liang, F. (2010b).
+A hidden Ising model for ChIP-chip data analysis.  
+{\it Bioinformatics} Advance Access published on January 28, 2010. doi:10.1093/bioinformatics/btq032
+
+\bibitem[\protect\citeauthoryear{Boyer et~al.}{2005}]{boy}
+Boyer, L.A., Lee, T.I., Cole, M.F., et al. (2005).
+Core transcriptional regulatory circuitry in human embryonic stem cells.
+{\it Cell} {\bf 122}, 947-956.
+
+\bibitem[\protect\citeauthoryear{Cawley et~al.}{2004}]{caw}
+Cawley, S., Bekiranov, S., Ng, H.H., et al. (2004).
+Unbiased mapping of transcription factor binding sites along human chromosomes 21 and 22 points to
+widespread regulation of noncoding RNAs.
+{\it Cell} {\bf 116}, 499-509.
+
+\bibitem[\protect\citeauthoryear{Newton et al.}{2004}]{new04}
+Newton, M., Noueiry, A., Sarkar, D., Ahlquist, P. (2004). Detecting differential gene expression with a semiparametric
+hierarchical mixture method.
+{\it Biostatistics} {\bf 5} , 155-176.
+
+\bibitem[\protect\citeauthoryear{Smyth}{2004}]{smyth}
+Smyth, G. (2004). Linear models and empirical Bayes methods for assessing differential expression in microarray
+experiments. {\it Statistical Applications in Genetics and Molecular Biology,} {\bf 3}, Iss. 1, Article 3.
+
+\end{thebibliography}
+
+\end{document}

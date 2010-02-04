@@ -1,0 +1,2 @@
+useDynLib(iChip)
+export(iChip1,iChip2,enrichreg,lmtstat)
