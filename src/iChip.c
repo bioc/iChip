@@ -3,10 +3,11 @@
 /*The latest version, 12/20/2008 */
 /* Qianxing Mo (moq@mskcc.org),Department of Epidemiology and Biostatistics, Memorial Sloan-Kettering Cancer Center */
 /*
-#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 */
+
+#include <math.h>
 #include <Rmath.h>
 #include <R.h>
 #include <Rinternals.h>
@@ -462,7 +463,7 @@ void MergeRegion(int *X,int *xrow, int *xcol, int *ycol,int *maxgap,int *Y,int *
 
   *nregion = j; 
   for(j=0; j < *ycol; j++){
-    for(i=0; i < *xrow; i++){
+    for(i=0; i <= *nregion; i++){
       Y[i+(*xrow)*j] = y[i][j];
     }
   }
@@ -514,7 +515,7 @@ R_NativePrimitiveArgType fdrArgs[5] =  {INTSXP,REALSXP,INTSXP,REALSXP,REALSXP};
 
 static const R_CMethodDef CEntries[] = {
   {"iChip2", (DL_FUNC)&iChip2, 15, iChip2Args},
-  {"iChip2", (DL_FUNC)&iChip2, 16, iChip1Args},
+  {"iChip1", (DL_FUNC)&iChip1, 16, iChip1Args},
   {"MergeRegion", (DL_FUNC)&MergeRegion, 7, MergeRegionArgs},
   {"fdr", (DL_FUNC)&fdr, 5, fdrArgs},
   {NULL, NULL, 0}

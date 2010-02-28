@@ -68,12 +68,12 @@ library(limma)
 
 \references{
   Qianxing Mo, Faming Liang.  (2010). Bayesian modeling of ChIP-chip data through
-  a high-order Ising model. \emph{Biometrics}  Advance Access published
-  in February, 2010. DOI: 10.1111/j.1541-0420.2009.01379.x
+  a high-order Ising model. \emph{Biometrics}, 2010 Jan 29 [Epub ahead
+  of print]. DOI: 10.1111/j.1541-0420.2009.01379.x
 
   Qianxing Mo, Faming Liang. (2010). A hidden Ising model for ChIP-chip
-  data analysis.  \emph{Bioinformatics} Advance Access published on
-  January 28, 2010. doi:10.1093/bioinformatics/btq032
+  data analysis.  \emph{Bioinformatics}, 2010 Jan 28 [Epub ahead of
+  print].  doi:10.1093/bioinformatics/btq032
   
   Newton, M., Noueiry, A., Sarkar, D., Ahlquist, P. (2004). Detecting
   differential gene expression with a semiparametric hierarchical mixture method.
