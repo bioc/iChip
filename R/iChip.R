@@ -117,13 +117,14 @@ lmtstat = function(IP,CON){
 }
 
 #function to find the binding regions based on posterior probability and selected cutoff
-#anno[,1] is the chromosome, anno[,2] is the genomic position
+#pos[,1] is the chromosome, pos[,2] is the genomic position
+#enrich is enrichment measurements
 #pp is the posterior probability, cutoff is selection criteria for pp
 #anno and pp are the results of the whole genome. 
 #probes are merged if the genomic distance between neighboring probes are less than the maxgap
-enrichreg = function(pos,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500){
-  if(nrow(pos) != length(pp)){
-    stop("nrow(pos) must be equal to length(pp) \n")
+enrichreg = function(pos,enrich,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500){
+  if((nrow(pos) != length(pp)) || (nrow(pos) != length(enrich))){
+    stop("nrow(pos), length(enrich) and length(pp) must be equal. \n")
   }
   if(cutoff <= 0 || cutoff >=1){
     stop("Error: pp should be in region (0, 1).\n")
@@ -169,8 +170,8 @@ enrichreg = function(pos,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500){
   ############ chrom   start   end   row.s  row.e  max.pp mean.pp
   y = matrix(c(x[1,1], x[1,2], x[1,2],x[1,3],x[1,3]),nrow=1)
   if(xlen == 1){
-    br = cbind(y,x[1,4],x[1,4],1)
-    colnames(br) = c("chr","gstart","gend","rstart","rend","meanpp","maxpp","nprobe")
+    br = cbind(y,x[1,2],x[1,4],x[1,4],1)
+    colnames(br) = c("chr","gstart","gend","rstart","rend","peakpos","meanpp","maxpp","nprobe")
     br = as.data.frame(br)
     br[1,1] = pos[br[1,4],1] #use the original chromosome label
     return(br)
@@ -187,21 +188,29 @@ enrichreg = function(pos,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500){
   if(res$nregion==1){
     y = matrix(y,ncol=5)
   }
-  
+
+#  maxID = .C("maxmvID",as.double(enrich),as.integer(nrow(y)),as.integer(y[,4]-1),as.integer(y[,5]-1),
+#    maxid=as.integer(rep(0,nrow(y))),PACKAGE="iChip")
+#  maxID = maxID$maxid + 1  #note c idex from 0
+
+  maxID = function(y,enrich){
+    (y[4]:y[5])[which.max(enrich[y[4]:y[5]])]
+  }
   meanFun = function(y,pp){
     mean(pp[y[4]:y[5]])
   }
   maxFun = function(y,pp){
     max(pp[y[4]:y[5]])
   }
-  jpp = matrix(NA,nrow=nrow(y),ncol=3)
-  jpp[,1] = apply(y,1,meanFun,pp=pp)
-  jpp[,2] = apply(y,1,maxFun,pp=pp)
-  jpp[,3] =  y[,5]-y[,4]+1 
+  jpp = matrix(NA,nrow=nrow(y),ncol=4)
+  jpp[,1] = pos[apply(y,1,maxID,enrich=enrich),2]
+  jpp[,2] = round(apply(y,1,meanFun,pp=pp),2)
+  jpp[,3] = round(apply(y,1,maxFun,pp=pp),2)
+  jpp[,4] =  y[,5]-y[,4]+1 
   br = cbind(y,jpp)
   br = as.data.frame(br)
   br[,1] = pos[br[,4],1] #use the original chromosome label
-  colnames(br) = c("chr","gstart","gend","rstart","rend","meanpp","maxpp","nprobe")
+  colnames(br) = c("chr","gstart","gend","rstart","rend","peakpos","meanpp","maxpp","nprobe")
   return(br)
 }
 

@@ -7,16 +7,17 @@
   posterior probability and false discovery rate (FDR) cutoffs. 
 }
 \usage{
-enrichreg(pos,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500)
+enrichreg(pos,enrich,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500)
 }
 
 \arguments{
   \item{pos}{A n by 2 matrix or data frame. Rows correspond to probes. The first
     column of the matrix contains chromosome IDs; the second column
     contains the genomic positions.}
+  \item{enrich}{A vector containing the probe enrichment measurements.}
   \item{pp}{A vector containing the posterior probabilities returned by
     iChip2 or iChip1. }
-  \item{cutoff}{The cutoff value used to call enriched
+  \item{cutoff}{The cutoff value (a scalar) used to call enriched
     probes.  If use posterior probability as a criterion (method="ppcut"), a probe
     is said to be enriched if its pp is greater than the cutoff.  If use
     FDR as a criterion (method="fdrcut"), probes are said to be enriched
@@ -39,6 +40,8 @@ enrichreg(pos,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500)
   \item{gend}{The end genomic position of the enriched region.}
   \item{rstart}{The row number for gstart in the position matrix.}
   \item{rend}{The row number for gend in the position matrix.}
+  \item{peakpos}{The peak genomic position of the enriched region where
+    the probe has the largest enrichment value.}
   \item{meanpp}{The mean posterior probability of the probes in the
     enriched region.}
   \item{maxpp}{The maximum posterior probability of the probes in the
@@ -48,19 +51,20 @@ enrichreg(pos,pp,cutoff,method=c("ppcut","fdrcut"),maxgap=500)
 }
 
 \examples{
-
 library(iChip)
 library(limma)
 
-# Analyze the p53 data (average resolution is about 35 bps)
-### uncommenting the following code for running
+#Analyze the p53 data (average resolution is about 35 bps)
+#uncommenting the following code for running
 
-# data(p53)
-# p53lmt = lmtstat(p53[,9:14],p53[,3:8])
-# p53Y = cbind(p53[,1],p53lmt)
-# p53res = iChip2(Y=p53Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5)
-# enrichreg(pos=p53[,1:2],pp=p53res$pp,cutoff=0.9,method="ppcut",maxgap=500)
-# enrichreg(pos=p53[,1:2],pp=p53res$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+#data(p53)
+#p53lmt = lmtstat(p53[,9:14],p53[,3:8])
+#p53Y = cbind(p53[,1],p53lmt)
+#p53res=iChip2(Y=p53Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5)
+#enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res$pp,cutoff=0.9,
+#          method="ppcut",maxgap=500)
+#enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res$pp,cutoff=0.01,
+#          method="fdrcut",maxgap=500)
 
 }
 

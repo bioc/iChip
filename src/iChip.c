@@ -174,15 +174,7 @@ void iChip2(int *burning,int *size,int *nrow,int *chr,double *mydt,int *halfwin,
 
   for(i=0; i<(*nrow); i++){
     postX[i] = (double)postX[i]/(*size);
-    /*   free(mydt[i]); */
   }
-  
-  /*
-  free(mydt);
-  free(nprobe);
-  free(position);
-  free(score2);
- */
 }
 
 
@@ -403,9 +395,7 @@ void iChip1(int *burning,int *Size,int *nrow,double *dt,double *sdCutoff1,double
   for(i=0; i<(*nrow); i++){
     postX[i] = (double)postX[i]/(*Size);
   }
-  /*  free(score2); */
 }
-
 
 
 /* X is the region needed to be merged. Merged region will be put in Y*/
@@ -468,17 +458,6 @@ void MergeRegion(int *X,int *xrow, int *xcol, int *ycol,int *maxgap,int *Y,int *
     }
   }
   *nregion = *nregion + 1; /*because R index is from 1:n */
-  /*
-  for(i=0; i<(*xrow);i++){
-    free(x[i]);
-    free(y[i]);
-  }
-  */
-
-  /*
-  free(x);
-  free(y);
-  */
 }
 
 void fdr(int *klen, double *kp, int *blen, double *beta, double *efdr){
@@ -503,7 +482,6 @@ void fdr(int *klen, double *kp, int *blen, double *beta, double *efdr){
     }
     efdr[k] = efdr[k]/J[k];
   }
-  /*  free(J); */
 }
 
 R_NativePrimitiveArgType iChip2Args[15] = {INTSXP, INTSXP, INTSXP, INTSXP, REALSXP, INTSXP, REALSXP, REALSXP, REALSXP, 
@@ -512,6 +490,8 @@ R_NativePrimitiveArgType iChip1Args[16] = {INTSXP,INTSXP,INTSXP,REALSXP,REALSXP,
 					   INTSXP,REALSXP,REALSXP,REALSXP,REALSXP,INTSXP};
 R_NativePrimitiveArgType MergeRegionArgs[7] =  {INTSXP,INTSXP,INTSXP,INTSXP,INTSXP,INTSXP,INTSXP};
 R_NativePrimitiveArgType fdrArgs[5] =  {INTSXP,REALSXP,INTSXP,REALSXP,REALSXP};
+/*R_NativePrimitiveArgType maxmvIDArgs[5] = {REALSXP,INTSXP,INTSXP,INTSXP,INTSXP};*/
+/*  {"maxmvID", (DL_FUNC)&maxmvID, 5, maxmvIDArgs}, */
 
 static const R_CMethodDef CEntries[] = {
   {"iChip2", (DL_FUNC)&iChip2, 15, iChip2Args},
@@ -521,15 +501,51 @@ static const R_CMethodDef CEntries[] = {
   {NULL, NULL, 0}
 }; 
 
+void R_init_iChip(DllInfo *dll){
+  R_registerRoutines(dll, CEntries, NULL, NULL, NULL);
+}
+
 /*
 static const R_CMethodDef CEntries[] = {
   {"iChip2", (DL_FUNC)&iChip2, 15},
   {"MergeRegion", (DL_FUNC)&MergeRegion, 7},
   {"fdr", (DL_FUNC)&fdr, 5},
   {NULL, NULL, 0}
-}; 
+};
 */
 
-void R_init_iChip(DllInfo *dll){
-  R_registerRoutines(dll, CEntries, NULL, NULL, NULL);
+
+/*Find the ID of the maximum moving average score */
+/*
+void maxmvID(double *score, int *reglen, int *start, int *end, int *maxid){
+  int i, j,k;
+  double maxmv1,maxmv2;
+
+  for(i=0; i < (*reglen); i++){
+    j = end[i] - start[i] + 1;
+    if(j >= 3){
+      maxmv1 = (score[start[i]]+score[start[i]+1])/2; 
+      maxid[i] = start[i];
+      for(k=(start[i]+1); k<=(end[i]-1); k++){
+        maxmv2 = (score[k-1]+score[k]+score[k+1])/3;
+        if(maxmv2 > maxmv1){
+          maxid[i] = k;
+          maxmv1 = maxmv2;
+        }
+      }
+      maxmv2 = (score[end[i]-1]+score[end[i]])/2;  
+      if(maxmv2 > maxmv1){
+        maxid[i] = end[i];
+      }
+    }else if(j == 2){
+      if(score[start[i]] > score[end[i]]){
+        maxid[i] = start[i];
+      }else{
+        maxid[i] = start[i];
+      }
+    }else{
+      maxid[i] = start[i];
+    }
+  }
 }
+*/

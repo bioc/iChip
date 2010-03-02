@@ -162,7 +162,7 @@ hist(oct4res2$pp)
 Call the enriched regions detected by iChip2 using a
 posterior probability (pp) cutoff of 0.9.  
 <<echo=TRUE,print=FALSE>>=
-reg1 = enrichreg(pos=oct4[,1:2],pp=oct4res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
+reg1 = enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
 print(reg1)
 @ 
 
@@ -170,7 +170,7 @@ print(reg1)
 Call the enriched regions detected by iChip2 using a FDR cutoff of 0.01.  The FDR is calculated
 using a direct posterior probability approach (Newton et al., 2004). 
 <<echo=TRUE,print=FALSE>>=
-reg2 = enrichreg(pos=oct4[,1:2],pp=oct4res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+reg2 = enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
 print(reg2)
 @ 
 
@@ -179,8 +179,16 @@ BED file can be easily created using the output from function {\bf enrichreg}, w
 and visualized in the UCSC genome browser.  For example, 
 
 <<echo=TRUE,print=FALSE>>=
-bed = data.frame(chr=paste("chr",reg2[,1],sep=""),reg2[,2:3])
-print(bed)
+bed1 = data.frame(chr=paste("chr",reg2[,1],sep=""),reg2[,2:3])
+print(bed1[1:3,])
+@ 
+
+\noindent
+Alternatively, one may create a BED file using the peak position of the enriched regions.  For example, 
+
+<<echo=TRUE,print=FALSE>>=
+bed2 = data.frame(chr=paste("chr",reg2[,1],sep=""),gstart=reg2[,6]-100,gend=reg2[,6]+100)
+print(bed2[1:3,])
 @ 
 
 \noindent
@@ -204,8 +212,8 @@ plot(oct4res1$lambda, pch=".", xlab="Iterations", ylab="lambda")
 \noindent
 Call the enriched regions detected by iChip1.
 <<echo=TRUE,print=FALSE>>=
-enrichreg(pos=oct4[,1:2],pp=oct4res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
-enrichreg(pos=oct4[,1:2],pp=oct4res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
+enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
 @ 
 
 \section{Example2 --- Analyzing the Affymetrix Tiling Array Data}
@@ -249,8 +257,8 @@ hist(p53res2$pp)
 \end{center}
 
 <<echo=TRUE,print=FALSE>>=
-enrichreg(pos=p53[,1:2],pp=p53res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
-enrichreg(pos=p53[,1:2],pp=p53res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
 @ 
 
 \noindent
@@ -270,8 +278,8 @@ plot(p53res1$lambda, pch=".", xlab="Iterations", ylab="lambda")
 \end{center}
 
 <<echo=TRUE,print=FALSE>>=
-enrichreg(pos=p53[,1:2],pp=p53res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
-enrichreg(pos=p53[,1:2],pp=p53res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
 @ 
 
 \section{Tips}
