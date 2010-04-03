@@ -48,7 +48,10 @@ iChip1(enrich,burnin=2000,sampling=10000,sdcut=2,beta0=3,
   A list with the following elements.
   \item{pp}{The posterior probabilities of probes in
     the binding/enriched state.  There is a strong evidence to be a
-    binding/enriched probe if the probe has a posterior probability close to 1. }
+    binding/enriched probe if the probe has a posterior probability
+    close to1. }
+  \item{beta}{The posterior samples of the interaction parameter of the
+    Ising model.}
   \item{mu0}{The posterior samples of the mean measurement of the probes in
     the non-binding/non-enriched state.}
   \item{mu1}{The posterior samples of the mean measurement of the probes in
@@ -58,8 +61,6 @@ iChip1(enrich,burnin=2000,sampling=10000,sdcut=2,beta0=3,
 }
 
 \examples{
-library(iChip)
-library(limma)
 
 # oct4 and p53 data are log2 transformed and quantile-normalized intensities
 
@@ -108,7 +109,7 @@ enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res$pp,cutoff=0.01,
 
 \references{
   Qianxing Mo, Faming Liang. (2010). A hidden Ising model for ChIP-chip
-  data analysis.  \emph{Bioinformatics}, 2010 Jan 28 [Epub ahead of print]. 
+  data analysis.  \emph{Bioinformatics} 26(6), 777-783. 
   doi:10.1093/bioinformatics/btq032
 }
 \keyword{models}

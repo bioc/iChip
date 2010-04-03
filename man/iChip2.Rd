@@ -67,8 +67,6 @@ iChip2(Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5,verbose=FALSE)
 }
 
 \examples{
-library(iChip)
-library(limma)
 
 # oct4 and p53 data are log2 transformed and quantile-normalized intensities
 

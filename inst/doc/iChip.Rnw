@@ -335,12 +335,20 @@ for running 15,000 iterations on a 64-bit Linux machine with 2.4 GHZ CPU.
 If the total number of probes is relatively small, 
 say, a half million, one may analyze the data in a single run.  If the total number of probes are large, say, 
 several millions, one may perform parallel computation.  For example, one can divide the data to several 
-pieces and run them simultaneously.  
+pieces and run them simultaneously.  The following are example codes for parallel computation in R using 
+the snowfall package (http://cran.r-project.org/web/packages/snowfall/).  
+
+\noindent
+library(snow) \\
+library(snowfall)  \\
+dataList = list(oct4t=oct4lmt,p53t=p53lmt) \\
+sfInit(parallel=TRUE,cpus=2,type="SOCK") \\
+res=sfLapply(dataList,iChip1,burnin = 2000, sampling = 10000,sdcut = 2, \\
+    beta0 = 3,minbeta = 0, maxbeta = 100, normsd = 0.1, verbose = FALSE) \\
 
 <<echo=TRUE,print=TRUE>>=
 sessionInfo()
 @ 
-
 
 %\newpage
 %\bibliographystyle{apalike}
@@ -354,7 +362,7 @@ Bayesian Modeling of ChIP-chip data through a high-order Ising Model.
 \bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010b}
 Mo, Q., Liang, F. (2010b).
 A hidden Ising model for ChIP-chip data analysis.  
-{\it Bioinformatics}, 2010 Jan 28 [Epub ahead of print]. doi:10.1093/bioinformatics/btq032
+{\it Bioinformatics} {\bf 26(6)}, 777-783. doi:10.1093/bioinformatics/btq032
 
 \bibitem[\protect\citeauthoryear{Boyer et~al.}{2005}]{boy}
 Boyer, L.A., Lee, T.I., Cole, M.F., et al. (2005).
