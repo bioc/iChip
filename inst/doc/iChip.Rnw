@@ -336,22 +336,20 @@ If the total number of probes is relatively small,
 say, a half million, one may analyze the data in a single run.  If the total number of probes are large, say, 
 several millions, one may perform parallel computation.  For example, one can divide the data to several 
 pieces and run them simultaneously.  The following are example codes for parallel computation in R using 
-the snowfall package (http://cran.r-project.org/web/packages/snowfall/).  
+the snowfall package (http://cran.r-project.org/web/packages/snowfall/).  \\
 
 \noindent
 library(snow) \\
 library(snowfall)  \\
 dataList = list(oct4t=oct4lmt,p53t=p53lmt) \\
 sfInit(parallel=TRUE,cpus=2,type="SOCK") \\
-res=sfLapply(dataList,iChip1,burnin = 2000, sampling = 10000,sdcut = 2, \\
-    beta0 = 3,minbeta = 0, maxbeta = 100, normsd = 0.1, verbose = FALSE) \\
+res=sfLapply(dataList,iChip1,burnin = 2000, sampling = 10000, sdcut = 2, \\
+ beta0 = 3,minbeta = 0, maxbeta = 100, normsd = 0.1, verbose = FALSE) \\
 
 <<echo=TRUE,print=TRUE>>=
 sessionInfo()
 @ 
 
-%\newpage
-%\bibliographystyle{apalike}
 \begin{thebibliography}{}
 
 \bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010a}

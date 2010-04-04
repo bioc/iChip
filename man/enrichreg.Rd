@@ -76,8 +76,8 @@ library(limma)
   of print]. DOI: 10.1111/j.1541-0420.2009.01379.x
 
   Qianxing Mo, Faming Liang. (2010). A hidden Ising model for ChIP-chip
-  data analysis.  \emph{Bioinformatics}, 2010 Jan 28 [Epub ahead of
-  print].  doi:10.1093/bioinformatics/btq032
+  data analysis.  \emph{Bioinformatics}  26(6), 777-783.
+  doi:10.1093/bioinformatics/btq032
   
   Newton, M., Noueiry, A., Sarkar, D., Ahlquist, P. (2004). Detecting
   differential gene expression with a semiparametric hierarchical mixture method.
