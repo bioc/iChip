@@ -1,2 +1,3 @@
 useDynLib(iChip)
+importFrom(limma, eBayes, lmFit)
 export(iChip1,iChip2,enrichreg,lmtstat)

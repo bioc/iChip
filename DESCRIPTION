@@ -2,10 +2,14 @@ Package: iChip
 Title: Bayesian Modeling of ChIP-chip Data Through Hidden Ising Models
 Version: 1.1.0
 Date: 2009-11-09
-Depends: R (>= 2.10.0),limma
+Depends: R (>= 2.10.0)
+Imports: limma
 Author: Qianxing Mo
 Maintainer: Qianxing Mo  <moq@mskcc.org>
-Description: This package uses hidden Ising models to identify enriched genomic regions in ChIP-chip data.  It can be used to analyze the data from multiple platforms (e.g., Affymetrix, Agilent, and NimbleGen), and the data with single to multiple replicates. 
+Description: This package uses hidden Ising models to identify enriched genomic
+             regions in ChIP-chip data.  It can be used to analyze the data
+             from multiple platforms (e.g., Affymetrix, Agilent, and NimbleGen),
+             and the data with single to multiple replicates. 
 LazyData: yes
 License: GPL (>= 2)
 biocViews: ChIP-chip,Affymetrix, Agilent, NimbleGen, Microarray, Bioinformatics
