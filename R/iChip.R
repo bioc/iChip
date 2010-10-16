@@ -46,7 +46,7 @@ iChip2 = function(Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5,verbos
 }
 
 ## standard one-dimensional Ising model for ChIP-chip data 
-iChip1 = function(enrich,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE){
+iChip1 = function(enrich,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE){
   if(missing(enrich)){
     stop("Argument enrich is missing!\n")
   }

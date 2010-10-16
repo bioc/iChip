@@ -2,7 +2,7 @@
 \alias{iChip2}
 \title{Bayesian modeling of ChIP-chip data through hidden Ising models}
 \description{
-  Function iChip2 implements a method of modeling ChIP-chip data through a high-order hidden Ising model. 
+  Function iChip2 implements the method of modeling ChIP-chip data through a high-order hidden Ising model. 
 }
 \usage{
 iChip2(Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5,verbose=FALSE)
@@ -87,7 +87,7 @@ oct4Y = cbind(oct4[,1],oct4lmt)
 
 # Apply the second-order Ising model to the ChIP-chip data
 
-oct4res=iChip2(Y=oct4Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=1.25)
+oct4res=iChip2(Y=oct4Y,burnin=1000,sampling=5000,winsize=2,sdcut=2,beta=1.25)
 
 # check the enriched regions detected by the Ising model using
 # posterior probability (pp) cutoff at 0.9 or FDR cutoff at 0.01
@@ -106,7 +106,7 @@ enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res$pp,cutoff=0.01,
 # p53 = p53[order(p53[,1],p53[,2]),]
 # p53lmt = lmtstat(p53[,9:14],p53[,3:8])
 # p53Y = cbind(p53[,1],p53lmt)
-# p53res=iChip2(Y=p53Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5)
+# p53res=iChip2(Y=p53Y,burnin=1000,sampling=5000,winsize=2,sdcut=2,beta=2.5)
 
 # enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res$pp,cutoff=0.9,
 #           method="ppcut",maxgap=500)

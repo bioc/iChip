@@ -53,8 +53,7 @@ ferromagnetic Ising models.  The Gibbs sampler and Metropolis algorithm are used
 posterior distributions of the model parameters, and the posterior probabilities for the probes 
 in the enriched state ($X_i = 1$) is used for statistical inference.  
 A probe with a high posterior probability in the enriched state will provide strong evidence that the probe is an 
-enriched probe.  For further details, we refer the user to Mo and Liang's papers.  If you use this
-software to analyze your data, we will appreciate it if you can cite our papers.  
+enriched probe.  For further details, we refer the user to Mo and Liang's papers. 
 
 \section{Agilent and Affymetrix ChIP-chip Data}
 
@@ -134,9 +133,9 @@ oct4res2 = iChip2(Y=oct4Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=1.25
 @ 
 
 \noindent 
-Plot the model parameters to see whether they converge.  In general, the model has converged when the parameters 
+Plot the model parameters to see whether they converge.  In general, the MCMC chains have converged when the parameters 
 fluctuate around the modes of their distributions.  If there is an obvious trend(e.g. continuous increase or decrease), 
-one should increase the number of iterations in the burn-in phase.  If this doesn't work, one can try to adjust 
+one should increase the number of iterations in the burn-in phase.  If this doesn't work, one can adjust 
 the parameter {\bf beta} to see how it affect the results. 
 \begin{center}
 <<fig=TRUE,echo=TRUE>>=
@@ -194,7 +193,7 @@ print(bed2[1:3,])
 \noindent
 Model the oct4 data using the first-order Ising model. 
 <<echo=TRUE,print=FALSE>>=
-oct4res1 =iChip1(enrich=oct4lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE)
+oct4res1 =iChip1(enrich=oct4lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 @ 
 
 \noindent 
@@ -264,7 +263,7 @@ enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res2$pp,cutoff=0.01,method="fdrcut",
 \noindent
 Model the p53 data using the first-order Ising model. 
 <<echo=TRUE,print=FALSE>>=
-p53res1 =iChip1(enrich=p53lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE)
+p53res1 =iChip1(enrich=p53lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 @ 
 
 \begin{center}
@@ -287,7 +286,7 @@ enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.01,method="fdrcut",
 What happens when there is no enriched region?  Suppose the data are just random noises.  
 <<echo=TRUE,print=FALSE>>=
 randomY = cbind(p53[,1],rnorm(10000,0,1))
-randomres2 = iChip2(Y=randomY,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=2.5,verbose=FALSE)
+randomres2 = iChip2(Y=randomY,burnin=1000,sampling=5000,winsize=2,sdcut=2,beta=2.5,verbose=FALSE)
 table(randomres2$pp)
 @ 
 
@@ -301,41 +300,41 @@ $\mu_1 = \infty$ or $\mu_1 = -\infty$, the posterior probabilities of probes are
 Therefore, when this happens, it means there are not enriched region.  \\
 
 \noindent
-In addition, for transcription factor binding site studies, if the posterior probabilities are not dichotomized 
-(major 0, minor 1), it suggests that the Ising model is not in the super-paramagnetic phase.  
+In addition, for the studies of transcription factor binding sites, if the posterior probabilities are not 
+dichotomized and dominated by 0, it suggests that the Ising model is not in the super-paramagnetic phase.  
 Only the super-paramagnetic phase reflects the binding events on the chromosomes.  
-Therefore, the users should increase the value of beta to let the phase transition occur so that
+Therefore, the user should increase the value of beta to let the phase transition occur so that
 the Ising model reach the super-paramagnetic phase. \\
 
 \noindent
-The states of probes produced by iChip1 are also in the same state if there is not enriched region. 
+The probes' states reported by iChip1 are also in the same state if there is not enriched region. 
 <<echo=TRUE,print=FALSE>>=
-randomres1 =iChip1(enrich=randomY[,2],burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE)
+randomres1 =iChip1(enrich=randomY[,2],burnin=1000,sampling=5000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 table(randomres1$pp)
 @ 
 
 \noindent
 Although the above two examples only show the analysis for the data on a single chromosome, one can 
-use iChip2 and iChip1 functions to analyze data with multiple chromosomes.  Although a probe may not physically 
-interact with its adjacent probes (e.g., the last probe of a chromosome and the first probe of the next chromosome, and 
-two probes in the same chromosome that are adjacent but separated by a long genomic distance), in practice, 
+use iChip2 and iChip1 functions to analyze data with multiple chromosomes.  Although a probe may not 
+be physically close to its adjacent probes (e.g., the last probe of a chromosome and the first probe 
+of the next chromosome, and the probes in the same chromosome that are adjacent but separated by 
+a long genomic distance), in practice, 
 it should be acceptable to consider the interactions between these adjacent and boundary probes.  
-There are two reasons for this argument.  Firstly, the number of these probes is quite small, 
+There are two reasons for this.  Firstly, the number of these probes is quite small, 
 compared to all the probes in the tiling arrays. Secondly, these boundary probes have a very high 
 probability to be non-binding probes, thus it should be reasonable to consider the interactions between them.  
 If we let these boundary and adjacent probes interact with each other, 
-it has little effect on the results, but significantly simply the algorithms for modeling the ChIP-chip data.  \\
+it has little effect on the results, but significantly simply the algorithms for modeling ChIP-chip data. 
+In addition, it should be noted that when the data are very noisy, the posterior mean of beta will be 
+relatively small(e.g., around 1) when the iChip1 method is used, and the posterior probabilities are not
+dichotomized and dominated by 0.  In this case, the user should increase the value of parameter {\bf minbeta}
+or use the {\bf iChip2} method for modeling. 
 
-\noindent
-Finally, it should be noted that when the data are very noisy, the posterior mean of beta will be relatively small
-(e.g., around 1) when the iChip1 method is used.  In this case, the probes are not dominated by non-binding probes.  
-The user should increase the value of parameter {\bf minbeta} or use the {\bf iChip2} method for modeling. 
-Both iChip1 and iChip2 functions run reasonably fast.  It costs about 15-20 minutes for a data set with 500,000 probes 
-for running 15,000 iterations on a 64-bit Linux machine with 2.4 GHZ CPU. 
-If the total number of probes is relatively small, 
-say, a half million, one may analyze the data in a single run.  If the total number of probes are large, say, 
-several millions, one may perform parallel computation.  For example, one can divide the data to several 
-pieces and run them simultaneously.  The following are example codes for parallel computation in R using 
+\section{Parallel Computaton}
+If the total number of probes is relatively small (e.g., a half million), one may analyze the data 
+in a single run.  If the total number of probes are large (e.g., several millions), 
+one may perform parallel computation.  For example, one can model the data chromosome by chromosome and
+run many jobs simultaneously.  The following is an example of parallel computation using 
 the snowfall package (http://cran.r-project.org/web/packages/snowfall/).  \\
 
 \noindent
@@ -344,7 +343,11 @@ library(snowfall)  \\
 dataList = list(oct4t=oct4lmt,p53t=p53lmt) \\
 sfInit(parallel=TRUE,cpus=2,type="SOCK") \\
 res=sfLapply(dataList,iChip1,burnin = 2000, sampling = 10000, sdcut = 2, \\
- beta0 = 3,minbeta = 0, maxbeta = 100, normsd = 0.1, verbose = FALSE) \\
+ beta0 = 3,minbeta = 0, maxbeta = 10, normsd = 0.1, verbose = FALSE) \\
+
+\section{Citing iChip}
+If you use iChip2 function, please cite Mo and Liang (2010a). If you use iChip1 function,
+please cite Mo and Liang (2010b). 
 
 <<echo=TRUE,print=TRUE>>=
 sessionInfo()

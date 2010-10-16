@@ -2,12 +2,12 @@
 \alias{iChip1}
 \title{Bayesian modeling of ChIP-chip data through hidden Ising models}
 \description{
-  Function iChip1 implements an algorithm of modeling ChIP-chip data
+  Function iChip1 implements the algorithm of modeling ChIP-chip data
   through a standard hidden Ising model.
 }
 \usage{
 iChip1(enrich,burnin=2000,sampling=10000,sdcut=2,beta0=3,
-       minbeta=0,maxbeta=100,normsd=0.1,verbose=FALSE)
+       minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 }
 \arguments{
   \item{enrich}{A vector containing the probe enrichment
@@ -77,8 +77,8 @@ oct4lmt = lmtstat(oct4[,5:6],oct4[,3:4])
 
 # Apply the standard Ising model to the ChIP-chip data
 
-oct4res = iChip1(enrich=oct4lmt,burnin=2000,sampling=10000,sdcut=2,
-                 beta0=3,minbeta=0,maxbeta=100,normsd=0.1)
+oct4res = iChip1(enrich=oct4lmt,burnin=1000,sampling=5000,sdcut=2,
+                 beta0=3,minbeta=0,maxbeta=10,normsd=0.1)
 
 # check the enriched regions detected by the Ising model using
 # posterior probability (pp) cutoff at 0.9 or FDR cutoff at 0.01
@@ -95,8 +95,8 @@ enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res$pp,cutoff=0.01,
 # must sort the data first
 # p53 = p53[order(p53[,1],p53[,2]),]
 # p53lmt = lmtstat(p53[,9:14],p53[,3:8])
-# p53res = iChip1(p53lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,
-#                 minbeta=0,maxbeta=100,normsd=0.1)
+# p53res = iChip1(p53lmt,burnin=1000,sampling=5000,sdcut=2,beta0=3,
+#                 minbeta=0,maxbeta=10,normsd=0.1)
 
 # enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res$pp,cutoff=0.9,
 #           method="ppcut",maxgap=500)
