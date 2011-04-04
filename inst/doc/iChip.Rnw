@@ -51,7 +51,7 @@ a single replicate, or a summary statistic such as t-like statistic or mean diff
 multiple replicates.  In the second stage, the latent variable is modeled by 
 ferromagnetic Ising models.  The Gibbs sampler and Metropolis algorithm are used to simulate from the 
 posterior distributions of the model parameters, and the posterior probabilities for the probes 
-in the enriched state ($X_i = 1$) is used for statistical inference.  
+in the enriched state ($X_i = 1$) are used for statistical inference.  
 A probe with a high posterior probability in the enriched state will provide strong evidence that the probe is an 
 enriched probe.  For further details, we refer the user to Mo and Liang's papers. 
 
@@ -94,7 +94,7 @@ head(oct4,n=3L)
 
 \noindent
 To use the iChip1 and iChip2 function, the data must be sorted, firstly by chromosome then by genomic position.
-It may be a good habit to sort the data at the beginning, although function {\bf lmtstat} doesn't require the data
+It may be a good habit to sort the data at the beginning, although function {\bf lmtstat} doesn't require the data to
 be sorted. 
 <<echo=TRUE,print=FALSE>>=
 oct4 = oct4[order(oct4[,1],oct4[,2]),]
@@ -136,7 +136,7 @@ oct4res2 = iChip2(Y=oct4Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=1.25
 Plot the model parameters to see whether they converge.  In general, the MCMC chains have converged when the parameters 
 fluctuate around the modes of their distributions.  If there is an obvious trend(e.g. continuous increase or decrease), 
 one should increase the number of iterations in the burn-in phase.  If this doesn't work, one can adjust 
-the parameter {\bf beta} to see how it affect the results. 
+the parameter {\bf beta} to see how it affects the results. 
 \begin{center}
 <<fig=TRUE,echo=TRUE>>=
 par(mfrow=c(2,2), mar=c(4.1, 4.1, 2.0, 1.0))
@@ -229,7 +229,7 @@ p53Y = cbind(p53[,1],p53lmt)
 @ 
 
 \noindent
-For high resolution data, beta could be set to a relatively large value (e.g. from 2-4).
+For high resolution data, beta could be set to a relatively large value (e.g. 2--4).
 In general, increasing beta value will lead to less enriched regions, which amounts to 
 setting a stringent criterion for detecting enriched regions. 
 <<echo=TRUE,print=FALSE>>=
@@ -291,23 +291,23 @@ table(randomres2$pp)
 @ 
 
 \noindent
-In this case, all the probes are only in one state.  Since there are not enriched probe, the mean and variance 
+In this case, all the probes are only in one state.  Since there is no enriched probe, the mean and variance 
 become $-\infty$ or $\infty$.  In the MCMC simulations, we relabel the outputs
 according to the constraint $\mu_0 < \mu_1$, where $\mu_0$ and $\mu_1$ are the population means for the non-enriched
 and enriched probes, respectively (For details, see Mo and Liang, 2010a).  That is, when $\mu_0 > \mu_1$,
 $\mu_0$ will be treated as the population mean of the enriched probes.  As a result, no matter 
-$\mu_1 = \infty$ or $\mu_1 = -\infty$, the posterior probabilities of probes are all 1s or close to 1. 
-Therefore, when this happens, it means there are not enriched region.  \\
+$\mu_1 = \infty$ or $\mu_1 = -\infty$, the posterior probabilities of the probes are all 1s or close to 1. 
+Therefore, when this happens, it means there is no enriched region.  \\
 
 \noindent
 In addition, for the studies of transcription factor binding sites, if the posterior probabilities are not 
-dichotomized and dominated by 0, it suggests that the Ising model is not in the super-paramagnetic phase.  
+dichotomized and dominated by 0, the Ising model is not in the super-paramagnetic phase.  
 Only the super-paramagnetic phase reflects the binding events on the chromosomes.  
 Therefore, the user should increase the value of beta to let the phase transition occur so that
 the Ising model reach the super-paramagnetic phase. \\
 
 \noindent
-The probes' states reported by iChip1 are also in the same state if there is not enriched region. 
+The probes' states reported by iChip1 are also in the same state if there is no enriched region. 
 <<echo=TRUE,print=FALSE>>=
 randomres1 =iChip1(enrich=randomY[,2],burnin=1000,sampling=5000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 table(randomres1$pp)
@@ -320,8 +320,8 @@ be physically close to its adjacent probes (e.g., the last probe of a chromosome
 of the next chromosome, and the probes in the same chromosome that are adjacent but separated by 
 a long genomic distance), in practice, 
 it should be acceptable to consider the interactions between these adjacent and boundary probes.  
-There are two reasons for this.  Firstly, the number of these probes is quite small, 
-compared to all the probes in the tiling arrays. Secondly, these boundary probes have a very high 
+There are two reasons for this.  First, the number of these probes is quite small, 
+compared to all the probes in the tiling arrays. Second, these boundary probes have a very high 
 probability to be non-binding probes, thus it should be reasonable to consider the interactions between them.  
 If we let these boundary and adjacent probes interact with each other, 
 it has little effect on the results, but significantly simply the algorithms for modeling ChIP-chip data. 
@@ -358,12 +358,12 @@ sessionInfo()
 \bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010a}
 Mo, Q., Liang, F. (2010a).
 Bayesian Modeling of ChIP-chip data through a high-order Ising Model.  
-{\it Biometrics}, 2010 Jan 29 [Epub ahead of print]. DOI: 10.1111/j.1541-0420.2009.01379.x
+{\it Biometrics} 66, 1284-1294.
 
 \bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010b}
 Mo, Q., Liang, F. (2010b).
 A hidden Ising model for ChIP-chip data analysis.  
-{\it Bioinformatics} {\bf 26(6)}, 777-783. doi:10.1093/bioinformatics/btq032
+{\it Bioinformatics} {\bf 26(6)}, 777-783.
 
 \bibitem[\protect\citeauthoryear{Boyer et~al.}{2005}]{boy}
 Boyer, L.A., Lee, T.I., Cole, M.F., et al. (2005).
