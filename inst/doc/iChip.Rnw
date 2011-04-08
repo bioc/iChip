@@ -36,9 +36,9 @@ Memorial Sloan-Kettering Cancer Center\\
 \section{Introduction}
 
 This package implements the models proposed by Mo and Liang (2010a, b) for ChIP-chip data analysis. 
-The package can be used to analyze the ChIP-chip data from multiple platforms 
+The package can be used to analyze ChIP-chip data from multiple platforms 
 (e.g. Affymetrix, Agilent, and NimbleGen) with various genomic resolutions and various sample sizes. 
-Mo and Liang (2010a,b) proposed Bayesian Hierarchical models to model the ChIP-chip data in which 
+Mo and Liang (2010a,b) proposed Bayesian Hierarchical models to model ChIP-chip data in which 
 the spatial dependency of the data is modeled through ferromagnetic high-order or standard Ising models.  
 Briefly,  without loss of generality, the proposed methods let each probe be associated with a binary 
 latent variable $X_i \in (0, 1)$,
@@ -46,7 +46,7 @@ where $i$ denotes the ID for the probe, and $X_i=1$ denotes that the probe is an
 otherwise.  In the first stage, conditioning on the latent variable, the probe enrichment measurements for 
 each state (0 or 1) are modeled by normal distributions.  Here, the probe enrichment measurement could
 be any appropriate measurement for comparison of IP-enriched and control samples.
-For example, the measurement could be a log2 ratio of the IP-enriched and control samples for
+For example, the measurement could be a log2 ratio of IP-enriched and control samples for
 a single replicate, or a summary statistic such as t-like statistic or mean difference for
 multiple replicates.  In the second stage, the latent variable is modeled by 
 ferromagnetic Ising models.  The Gibbs sampler and Metropolis algorithm are used to simulate from the 
@@ -75,7 +75,7 @@ The full p53 data can be obtained from
 \end{verbatim}
 
 \section{Example1 --- Analyzing the Agilent Promoter Array Data}
-Let's start analyzing the low resolution Oct4 data.  Firstly, we need to calculate the enrichment measurement
+Let's start analyzing the low resolution Oct4 data.  First, we need to calculate the enrichment measurement
 for each probe.  Although the enrichment measurement could be any appropriate measurement 
 for comparison of IP-enriched and control samples, we suggest using the 
 empirical Bayes t-statistic for multiple replicates, which can be easily calculated using 
@@ -322,7 +322,7 @@ a long genomic distance), in practice,
 it should be acceptable to consider the interactions between these adjacent and boundary probes.  
 There are two reasons for this.  First, the number of these probes is quite small, 
 compared to all the probes in the tiling arrays. Second, these boundary probes have a very high 
-probability to be non-binding probes, thus it should be reasonable to consider the interactions between them.  
+probability of being non-enriched, thus it should be reasonable to consider the interactions between them.  
 If we let these boundary and adjacent probes interact with each other, 
 it has little effect on the results, but significantly simply the algorithms for modeling ChIP-chip data. 
 In addition, it should be noted that when the data are very noisy, the posterior mean of beta will be 
