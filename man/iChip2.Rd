@@ -115,12 +115,11 @@ enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res$pp,cutoff=0.01,
 
 }
 
-\author{Qianxing Mo \email{moq@mskcc.org}}
+\author{Qianxing Mo \email{qmo@bcm.edu}}
 
 \references{
   Qianxing Mo, Faming Liang. (2010). Bayesian modeling of ChIP-chip data through
-  a high-order Ising model. \emph{Biometrics}, 2010 Jan 29 [Epub ahead
-  of print]. DOI: 10.1111/j.1541-0420.2009.01379.x
+  a high-order Ising model. \emph{Biometrics} 64(4), 1284-94. 
 }
 \keyword{models}
 

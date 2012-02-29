@@ -25,9 +25,10 @@
 \maketitle
 
 \begin{center}
-Department of Epidemiology and Biostatistics\\
-Memorial Sloan-Kettering Cancer Center\\
-{\tt moq@mskcc.org}
+Division of Biostatistics\\
+Dan L. Duncan Cancer Center\\
+Baylor College of Medicine\\
+{\tt qmo@bcm.edu}
 \end{center}
 
 \tableofcontents
@@ -358,7 +359,7 @@ sessionInfo()
 \bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010a}
 Mo, Q., Liang, F. (2010a).
 Bayesian Modeling of ChIP-chip data through a high-order Ising Model.  
-{\it Biometrics} 66, 1284-1294.
+{\it Biometrics} 66(4), 1284-1294.
 
 \bibitem[\protect\citeauthoryear{Mo and Liang.}{2010}]{mo2010b}
 Mo, Q., Liang, F. (2010b).

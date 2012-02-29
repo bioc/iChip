@@ -105,12 +105,11 @@ enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res$pp,cutoff=0.01,
 
 }
 
-\author{Qianxing Mo \email{moq@mskcc.org}}
+\author{Qianxing Mo \email{qmo@bcm.edu}}
 
 \references{
   Qianxing Mo, Faming Liang. (2010). A hidden Ising model for ChIP-chip
   data analysis.  \emph{Bioinformatics} 26(6), 777-783. 
-  doi:10.1093/bioinformatics/btq032
 }
 \keyword{models}
 
