@@ -12,4 +12,4 @@ Description: This package uses hidden Ising models to identify enriched genomic
              and the data with single to multiple replicates. 
 LazyData: yes
 License: GPL (>= 2)
-biocViews: ChIP-chip, NimbleGen, Affymetrix, Agilent,Microarray, Bioinformatics
+biocViews: ChIPchip, NimbleGen, Affymetrix, Agilent,Microarray, Bioinformatics
