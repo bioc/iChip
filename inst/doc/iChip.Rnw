@@ -53,7 +53,7 @@ multiple replicates.  In the second stage, the latent variable is modeled by
 ferromagnetic Ising models.  The Gibbs sampler and Metropolis algorithm are used to simulate from the 
 posterior distributions of the model parameters, and the posterior probabilities for the probes 
 in the enriched state ($X_i = 1$) are used for statistical inference.  
-A probe with a high posterior probability in the enriched state will provide strong evidence that the probe is an 
+A probe with a high posterior probability of the enriched state will provide strong evidence that the probe is an 
 enriched probe.  For further details, we refer the user to Mo and Liang's papers. 
 
 \section{Agilent and Affymetrix ChIP-chip Data}
@@ -65,15 +65,12 @@ Note iChip software doesn't provide functions for data normalization.  The users
 {\it normalize.quantiles()} in the {\bf affy} package). For two-color data, one can also use 
 the \textit{loess} method (e.g., see the function \textit{normalizeWithinArrays()} in the {\bf limma} package). 
 \noindent
-The full Oct4 data can be obtained from 
-\begin{verbatim}
-  http://jura.wi.mit.edu/young_public/hESregulation/Data_download.html
-\end{verbatim}
+The full Oct4 data can be obtained from \\
+  \url{http://jura.wi.mit.edu/young_public/hESregulation/Data_download.html}.
+
 \noindent
-The full p53 data can be obtained from 
-\begin{verbatim}
- http://www.gingeras.org/affy_archive_data/publication/tfbs/
-\end{verbatim}
+The full p53 data can be obtained from \\
+\url{http://www.gingeras.org/affy_archive_data/publication/tfbs/}.
 
 \section{Example1 --- Analyzing the Agilent Promoter Array Data}
 Let's start analyzing the low resolution Oct4 data.  First, we need to calculate the enrichment measurement
@@ -130,7 +127,8 @@ In general, increasing beta value will lead to less enriched regions, which amou
 setting a stringent criterion for detecting enriched regions. 
 <<echo=TRUE,print=FALSE>>=
 set.seed(777)
-oct4res2 = iChip2(Y=oct4Y,burnin=2000,sampling=10000,winsize=2,sdcut=2,beta=1.25,verbose=FALSE)
+oct4res2 = iChip2(Y=oct4Y,burnin=2000,sampling=10000,winsize=2,
+  sdcut=2,beta=1.25,verbose=FALSE)
 @ 
 
 \noindent 
@@ -162,7 +160,8 @@ hist(oct4res2$pp)
 Call the enriched regions detected by iChip2 using a
 posterior probability (pp) cutoff of 0.9.  
 <<echo=TRUE,print=FALSE>>=
-reg1 = enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
+reg1 = enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res2$pp,
+  cutoff=0.9,method="ppcut",maxgap=500)
 print(reg1)
 @ 
 
@@ -170,31 +169,34 @@ print(reg1)
 Call the enriched regions detected by iChip2 using a FDR cutoff of 0.01.  The FDR is calculated
 using a direct posterior probability approach (Newton et al., 2004). 
 <<echo=TRUE,print=FALSE>>=
-reg2 = enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+reg2 = enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res2$pp,
+  cutoff=0.01,method="fdrcut",maxgap=500)
 print(reg2)
 @ 
 
 \noindent
-BED file can be easily created using the output from function {\bf enrichreg}, which can be used for motif discovery
+BED file can be easily made using the output from function {\bf enrichreg}, which can be used for motif discovery
 and visualized in the UCSC genome browser.  For example, 
 
 <<echo=TRUE,print=FALSE>>=
 bed1 = data.frame(chr=paste("chr",reg2[,1],sep=""),reg2[,2:3])
-print(bed1[1:3,])
+print(bed1[1:2,])
 @ 
 
 \noindent
 Alternatively, one may create a BED file using the peak position of the enriched regions.  For example, 
 
 <<echo=TRUE,print=FALSE>>=
-bed2 = data.frame(chr=paste("chr",reg2[,1],sep=""),gstart=reg2[,6]-100,gend=reg2[,6]+100)
-print(bed2[1:3,])
+bed2 = data.frame(chr=paste("chr",reg2[,1],sep=""),gstart=reg2[,6]-100,
+  gend=reg2[,6]+100)
+print(bed2[1:2,])
 @ 
 
 \noindent
 Model the oct4 data using the first-order Ising model. 
 <<echo=TRUE,print=FALSE>>=
-oct4res1 =iChip1(enrich=oct4lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
+oct4res1 =iChip1(enrich=oct4lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,
+  minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 @ 
 
 \noindent 
@@ -212,8 +214,10 @@ plot(oct4res1$lambda, pch=".", xlab="Iterations", ylab="lambda")
 \noindent
 Call the enriched regions detected by iChip1.
 <<echo=TRUE,print=FALSE>>=
-enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
-enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res1$pp,cutoff=0.9,
+          method="ppcut",maxgap=500)
+enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res1$pp,cutoff=0.01,
+          method="fdrcut",maxgap=500)
 @ 
 
 \section{Example2 --- Analyzing the Affymetrix Tiling Array Data}
@@ -257,14 +261,17 @@ hist(p53res2$pp)
 \end{center}
 
 <<echo=TRUE,print=FALSE>>=
-enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res2$pp,cutoff=0.9,method="ppcut",maxgap=500)
-enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res2$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res2$pp,cutoff=0.9,
+          method="ppcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res2$pp,cutoff=0.01,
+          method="fdrcut",maxgap=500)
 @ 
 
 \noindent
 Model the p53 data using the first-order Ising model. 
 <<echo=TRUE,print=FALSE>>=
-p53res1 =iChip1(enrich=p53lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
+p53res1 =iChip1(enrich=p53lmt,burnin=2000,sampling=10000,sdcut=2,beta0=3,
+  minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 @ 
 
 \begin{center}
@@ -278,8 +285,10 @@ plot(p53res1$lambda, pch=".", xlab="Iterations", ylab="lambda")
 \end{center}
 
 <<echo=TRUE,print=FALSE>>=
-enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.9,method="ppcut",maxgap=500)
-enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.01,method="fdrcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.9,
+          method="ppcut",maxgap=500)
+enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.01,
+          method="fdrcut",maxgap=500)
 @ 
 
 \section{Tips}
@@ -287,7 +296,8 @@ enrichreg(pos=p53[,1:2],enrich=p53lmt,pp=p53res1$pp,cutoff=0.01,method="fdrcut",
 What happens when there is no enriched region?  Suppose the data are just random noises.  
 <<echo=TRUE,print=FALSE>>=
 randomY = cbind(p53[,1],rnorm(10000,0,1))
-randomres2 = iChip2(Y=randomY,burnin=1000,sampling=5000,winsize=2,sdcut=2,beta=2.5,verbose=FALSE)
+randomres2 = iChip2(Y=randomY,burnin=1000,sampling=5000,winsize=2,
+  sdcut=2,beta=2.5,verbose=FALSE)
 table(randomres2$pp)
 @ 
 
@@ -310,7 +320,8 @@ the Ising model reach the super-paramagnetic phase. \\
 \noindent
 The probes' states reported by iChip1 are also in the same state if there is no enriched region. 
 <<echo=TRUE,print=FALSE>>=
-randomres1 =iChip1(enrich=randomY[,2],burnin=1000,sampling=5000,sdcut=2,beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
+randomres1 =iChip1(enrich=randomY[,2],burnin=1000,sampling=5000,sdcut=2,
+  beta0=3,minbeta=0,maxbeta=10,normsd=0.1,verbose=FALSE)
 table(randomres1$pp)
 @ 
 
@@ -336,7 +347,7 @@ If the total number of probes is relatively small (e.g., a half million), one ma
 in a single run.  If the total number of probes are large (e.g., several millions), 
 one may perform parallel computation.  For example, one can model the data chromosome by chromosome and
 run many jobs simultaneously.  The following is an example of parallel computation using 
-the snowfall package (http://cran.r-project.org/web/packages/snowfall/).  \\
+the snowfall package (\url{http://cran.r-project.org/web/packages/snowfall/}).  \\
 
 \noindent
 library(snow) \\
@@ -346,6 +357,15 @@ sfInit(parallel=TRUE,cpus=2,type="SOCK") \\
 res=sfLapply(dataList,iChip1,burnin = 2000, sampling = 10000, sdcut = 2, \\
  beta0 = 3,minbeta = 0, maxbeta = 10, normsd = 0.1, verbose = FALSE) \\
 
+ \noindent
+ In addition, Mo (2012) has applied Ising models to analysis of
+ ChIP-seq data, and provided an R script named 'iSeq.R' that can be
+ used as a command line program in Unix/Linux environment.  If the
+ user is interested in it, the user may modify the script to
+ automate ChIP-chip data analyis.  The R script iSeq.R is available
+ at \\
+\url{https://sites.google.com/site/quincymobio/teaching-materials}.  
+ 
 \section{Citing iChip}
 If you use iChip2 function, please cite Mo and Liang (2010a). If you use iChip1 function,
 please cite Mo and Liang (2010b). 
@@ -365,6 +385,10 @@ Bayesian Modeling of ChIP-chip data through a high-order Ising Model.
 Mo, Q., Liang, F. (2010b).
 A hidden Ising model for ChIP-chip data analysis.  
 {\it Bioinformatics} {\bf 26(6)}, 777-783.
+
+\bibitem[\protect\citeauthoryear{Mo}{2011}]{mo2012}
+Mo, Q. (2012). A fully Bayesian hidden Ising model for ChIP-seq data analysis. 
+{\it Biostatistics} {\bf 13(1)}, 113-28.
 
 \bibitem[\protect\citeauthoryear{Boyer et~al.}{2005}]{boy}
 Boyer, L.A., Lee, T.I., Cole, M.F., et al. (2005).
