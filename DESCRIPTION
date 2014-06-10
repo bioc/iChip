@@ -1,6 +1,6 @@
 Package: iChip
 Title: Bayesian Modeling of ChIP-chip Data Through Hidden Ising Models
-Version: 1.19.0
+Version: 1.19.1
 Date: 2012-9-26
 Depends: R (>= 2.10.0)
 Imports: limma
@@ -14,4 +14,4 @@ Description: This package uses hidden Ising models to identify enriched
 LazyData: yes
 License: GPL (>= 2)
 Packaged: 2012-09-26 16:05:16 UTC; quincymo
-biocViews: ChIPchip, NimbleGen, OneChannel, Agilent, Microarray
+biocViews: ChIPchip, OneChannel, AgilentChip, Microarray
