@@ -1,6 +1,6 @@
 Package: iChip
 Title: Bayesian Modeling of ChIP-chip Data Through Hidden Ising Models
-Version: 1.32.0
+Version: 1.33.0
 Date: 2012-9-26
 Depends: R (>= 2.10.0)
 Imports: limma
