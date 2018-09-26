@@ -25,10 +25,10 @@
 \maketitle
 
 \begin{center}
-Division of Biostatistics\\
-Dan L. Duncan Cancer Center\\
-Baylor College of Medicine\\
-{\tt qmo@bcm.edu}
+Department of Biostatistics \& Bioinformatics \\
+H. Lee Moffitt Cancer Center \& Research Institute \\
+12902 Magnolia Drive, Tampa, FL 33612  \\
+{\tt qianxing.mo@moffitt.org}
 \end{center}
 
 \tableofcontents

@@ -1,7 +1,7 @@
 /* Codes adapted from IsingChip8.c; only keep the necessary functions in IsingChip8.c */
 /* Functions in this file are used for the paper "Bayesian Modeling of ChIP-chip data through a high-order Ising model */
 /*The latest version, 12/20/2008 */
-/* Qianxing Mo (moq@mskcc.org),Department of Epidemiology and Biostatistics, Memorial Sloan-Kettering Cancer Center */
+/* Qianxing Mo (qianxing.mo@moffitt.org) */
 /*
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,7 +21,7 @@ void iChip2(int *burning,int *size,int *nrow,int *chr,double *mydt,int *halfwin,
 	    double *postX,int *X,double *mu0,double *lambda0,double *mu1,double *lambda1,int *verbose){
   int *nprobe,*position;
   int sampleSize,LB,RB,i,j,r,nnoise,nsignal,state,nrowm1,wtsum;
-  double *score2,z0,z1,p,meanScore,varScore,sdScore,mean3sd,sdnoise,sdsignal;
+  double *score2,z0,z1,p,meanScore,varScore,sdScore,mean3sd;
   double sumnoise,sumsignal,sumsigx2,sumnoix2,Scale0,Scale1;
   nrowm1 = *nrow - 1;
   sampleSize = (*burning) + (*size);
@@ -185,7 +185,7 @@ void iChip1(int *burning,int *Size,int *nrow,double *dt,double *sdCutoff1,double
 	    double *maxBeta,double *ransd,double *postX,int *X,double *postBeta,double *mu0,
 	    double *mu1,double *lambda,int *verbose){
 
-  int sampleSize,i,j,r,nnoise,nsignal,state,nrowm1,sumxx,rm1;
+  int sampleSize,i,r,nnoise,nsignal,state,nrowm1,sumxx,rm1;
   double *score2,z0,z1,p,meanScore,varScore,sdScore,mean3sd,beta,Scale0;
   double halfsize,sumnoise,sumsignal,sumsigx2,sumnoix2,newBeta,ratio;
   halfsize = *nrow/2.0;

@@ -115,7 +115,7 @@ enrichreg(pos=oct4[,1:2],enrich=oct4lmt,pp=oct4res$pp,cutoff=0.01,
 
 }
 
-\author{Qianxing Mo \email{qmo@bcm.edu}}
+\author{Qianxing Mo \email{qianxing.mo@moffitt.org}}
 
 \references{
   Qianxing Mo, Faming Liang. (2010). Bayesian modeling of ChIP-chip data through

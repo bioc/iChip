@@ -49,7 +49,7 @@ oct4lmt2 = lmtstat(oct4log2r)
 
 }
 
-\author{Qianxing Mo \email{qmo@bcm.edu}}
+\author{Qianxing Mo \email{qianxing.mo@moffitt.org}}
 
 \references{
   Smyth, G. K. (2004). Linear models and empirical Bayes methods for
