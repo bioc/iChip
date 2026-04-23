@@ -26,7 +26,7 @@ lmtstat(IP,CON)
   \code{\link{enrichreg}}, \code{\link{iChip2}},\code{\link{iChip1}}
 }
 \value{
-  \item{ }{Empirical Bayes t-statistics calculated using functions in the
+  \item{lmtstat}{Empirical Bayes t-statistics calculated using functions in the
     limma package.}
 }
 

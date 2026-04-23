@@ -7,7 +7,7 @@
  20. The data were log2 transformed and quantile-normalized. 
 }
 \usage{data(oct4)}
-\source{http://jura.wi.mit.edu/young\_public/hESregulation/Data\_download.html}
+\source{\url{http://jura.wi.mit.edu/young_public/hESregulation/Data_download.html}} 
 \references{Boyer LA, Lee TI, Cole MF, et al. (2005).  Core
   transcriptional regulatory circuitry in human embryonic stem cells.  Cell,122(6), 828-30.}
 \keyword{datasets}
